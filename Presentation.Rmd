@@ -1,0 +1,353 @@
+---
+title: "How to make a cool hexsticker (based on tennis)"
+author: "Vanessa di Lego"
+institute: "Wittgenstein Center (IIASA/OeAW/Univ.Vienna), Vienna Institute of Demography"
+date: "2022/06/07"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+---
+
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_light(base_color = "#23395b",
+                 header_font_google = google_font("Martel"),
+          text_font_google = google_font("Lato"),
+          code_font_google = google_font("Fira Mono"))
+
+```
+
+class: center, middle
+
+### R is very much like tennis... precise, beautiful, plastic 
+
+<img src="https://media.giphy.com/media/KyANBUpwmWjDP4W9n7/giphy.gif" width="800" height="500">
+
+---
+
+class: inverse,center, middle
+
+##... and painfully fun!
+
+.pull-left[
+![](https://media.giphy.com/media/AHEMa5JNGFmzS/giphy.gif)]
+
+.pull-right[
+![](https://media.giphy.com/media/1lAdYw2pDWXniSbPJi/giphy.gif)]
+
+---
+
+## Today we will learn how:
+
+.pull-left[
+
+- use some cool packages to build a hexsticker for your package, project or just for fun
+
+- I will use some tennis data and stats to make some graphs for the sticker
+
+
+- The image for the sticker can come from an online source, be developed within R or simply designed in any other platform and read in for the sticker]
+
+
+.pull-right[
+![](https://media.giphy.com/media/Lnuq0IFLhyt6v61Qeo/giphy.gif)]
+
+---
+
+class: inverse,center, middle
+
+## Let´s do this!
+
+
+![](https://media.giphy.com/media/ZwBnkS8W4HXCDRvevm/giphy.gif)
+
+
+---
+class: center, middle
+
+## First steps:
+
+Install some packages:
+
+.pull-left[
+```{r pck, eval=FALSE, warning=F, comment=F}
+library(ggplot2) #for lots
+library(gplots) #for heatmaps
+library(RColorBrewer) #for palettes
+library(tidyverse) # for data wrangling
+library(dplyr) #for dataset manipulation
+library(knitr) #for neaty dataset printing
+library(timelineS) #for timeline plot
+library(circlize) #for chord-diagrams
+library(fmsb) #for radar plots
+library(here) # for setting environment project
+library(data.table) # for fast reading data and functions
+library(hexSticker) # the hexsticker package
+
+```
+]
+
+.pull-right[
+```{r pck2, eval=FALSE, warning=F, comment=F}
+library_toload <- c("dplyr", "knitr", "ggplot2", "gplots", "RColorBrewer", "timelineS", "circlize", "fmsb")
+invisible(lapply(library_toload, function(x) {suppressPackageStartupMessages(library(x, character.only=TRUE))}))
+```
+]
+
+---
+class: center, middle
+## Some examples from the package:
+
+Check the [**hexSticker**](https://github.com/GuangchuangYu/hexSticker) github repository for these examples and some troubleshoot.
+
+---
+
+class: center, middle
+
+## Example 1: For base R users/graphs using lattice
+
+.pull-left[
+
+```{r ex1, warning=F,comment=F}
+
+library(hexSticker)
+library(lattice)
+library(here)
+
+counts <- c(18,17,15,20,10,20,25,13,12)
+outcome <- gl(3,1,9)
+treatment <- gl(3,3)
+bwplot <- bwplot(counts ~ outcome | treatment, xlab=NULL, ylab=NULL, cex=.5,
+                 scales=list(cex=.5), par.strip.text=list(cex=.5))
+sticker(bwplot, package="hexSticker", p_size=20, s_x=1.05, s_y=.8, s_width=2, s_height=1.5,
+        h_fill="#f9690e", h_color="#f39c12",filename=here("Figures","ex1.png"))
+
+```
+]
+
+.pull-right[
+```{r, echo=F, fig.align='center', message=FALSE, warning=FALSE, out.width="70%",cache=F}
+
+library(here)
+library(knitr)
+include_graphics(here("Figures","ex1.png"))
+
+```
+
+]
+---
+class: center, middle
+
+## Example 2: For base R users/graphs using lattice
+
+.pull-left[
+```{r ex2, message=FALSE, warning=FALSE}
+
+library(ggplot2)
+library(here)
+
+p <- ggplot(aes(x = mpg, y = wt), data = mtcars) + geom_point()
+p <- p + theme_void() + theme_transparent()
+
+sticker(p, package="hexSticker", p_size=20, s_x=1, s_y=.75, s_width=1.3, s_height=1,filename=here("Figures","ex2.png"))
+
+```
+
+]
+.pull-right[
+```{r, echo=F, fig.align='center', message=FALSE, warning=FALSE, out.width="70%",cache=F}
+
+library(here)
+library(knitr)
+include_graphics(here("Figures","ex2.png"))
+
+```
+
+]
+
+---
+class: center, middle
+
+## Example 3: Using any figure or image!
+
+.pull-left[
+After you save an image or have a specific design you can simply use this image for your sticker:
+```{r ex3, message=FALSE, warning=FALSE}
+library(here)
+library(knitr)
+## Example 3: For figures already done
+
+
+sticker(here("Figures","beethoven.jpg"), package="hexThoven", p_size=20, s_x=1, s_y=.75, s_width=.6,filename=here("Figures","ex3.png"), h_color="darkred", h_fill="darkgrey")
+```
+]
+.pull-right[
+```{r, echo=F, fig.align='center', message=FALSE, warning=FALSE, out.width="70%",cache=F}
+
+library(here)
+library(knitr)
+include_graphics(here("Figures","ex3.png"))
+
+```
+
+]
+
+---
+class: center, middle
+
+### Now let´s try to use some tennis data!
+
+.pull-left[
+```{r dt1, eval=FALSE,message=FALSE, warning=FALSE}
+
+library_toload <- c("dplyr", "knitr", "ggplot2", "gplots", "RColorBrewer", "timelineS", "circlize", "fmsb")
+invisible(lapply(library_toload, function(x) {suppressPackageStartupMessages(library(x, character.only=TRUE))}))
+
+url_file <- "https://datascienceplus.com/wp-content/uploads/2017/04/tennis-grand-slam-winners.txt"
+slam_win <- read.delim(url(url_file), sep="\t", stringsAsFactors = FALSE)
+
+slam_win$YEAR_DATE <- as.Date(mapply(year_to_date_trnm, slam_win$YEAR, slam_win$TOURNAMENT), format="%Y-%m-%d")
+kable(head(slam_win, 10))
+
+```
+![](https://media.giphy.com/media/4Nvg2jmFkhZr0Gngjk/giphy.gif)
+]
+
+
+.pull-right[
+```{r dt2, echo=F,message=FALSE, warning=FALSE}
+
+library_toload <- c("dplyr", "knitr", "ggplot2", "gplots", "RColorBrewer", "timelineS", "circlize", "fmsb")
+invisible(lapply(library_toload, function(x) {suppressPackageStartupMessages(library(x, character.only=TRUE))}))
+
+url_file <- "https://datascienceplus.com/wp-content/uploads/2017/04/tennis-grand-slam-winners.txt"
+slam_win <- read.delim(url(url_file), sep="\t", stringsAsFactors = FALSE)
+
+slam_win[grep("Australian Open", slam_win$TOURNAMENT), "TOURNAMENT"] = "Australian Open"
+
+year_to_date_trnm <- function(the_year, the_trnm) {
+  the_date <- NULL
+  if (the_trnm == "Australian Open") {
+    the_date <- (paste(the_year, "-01-31", sep=""))
+  } else if (the_trnm == "French Open") {
+    the_date <- (paste(the_year, "-06-15", sep=""))
+  } else if (the_trnm == "Wimbledon") {
+    the_date <- (paste(the_year, "-07-15", sep=""))
+  } else if (the_trnm == "U.S. Open") {
+    the_date <- (paste(the_year, "-09-07", sep=""))
+  }
+  the_date
+}
+
+slam_win$YEAR_DATE <- as.Date(mapply(year_to_date_trnm, slam_win$YEAR, slam_win$TOURNAMENT), format="%Y-%m-%d")
+kable(head(slam_win, 10))
+
+```
+]
+
+---
+
+class: inverse, center, middle
+
+## Sticker 1: Grand Slams Winners by Tournament type 
+
+```{r fig3, echo=F, fig.align='center', message=FALSE, warning=FALSE, out.width="35%"}
+
+library(here)
+include_graphics(here("Figures","st_1.png"))
+
+```
+
+---
+class: inverse, center, middle
+
+## Mental Toughness 
+
+One important preditor of being a winner in tennis is your mental toughness. This is a rating that compares players in pressure situations:
+
+$$Mental Toughness Rating = \frac{Mental Points Won}{Mental Points Lost}$$
+Mental Points are weighted pressure situations: 
+Mental Point = 2* Best-of-3 Deciding Set + 4 * Best-of-5 Deciding Set + 2 * Final Match + Non-Deciding Set Tie-Break + 2 * Deciding Set Tie Break
+
+---
+class: center, middle
+
+## Mental Toughness 
+
+Data on mental toughness was downloaded [**here**](https://www.ultimatetennisstatistics.com/mentalToughness)
+
+
+.pull-left[
+```{r, eval=F, message=FALSE, warning=FALSE}
+
+library(data.table)
+library(here)
+library(dplyr)
+mt<-fread(here("Data","MentalToughness.csv"))
+
+```
+
+![](https://media.giphy.com/media/FtanAYyYWjFyU7bPBf/giphy.gif)
+
+]
+.pull-right[
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+library(data.table)
+library(here)
+library(dplyr)
+mt<-fread(here("Data","MentalToughness.csv"))
+
+mt<-mt %>% 
+  select(1:3,6) 
+
+kable(head(mt, 10))
+
+
+```
+]
+
+---
+
+## Let´s do a sticker on mental toughness ranking
+
+here just the results!!! Indeed, Djokovic, represented in the map by Serbia, has the highest score on mental toughness. well...not always, though
+
+.pull-left[
+
+![](https://media.giphy.com/media/fMzhBp1medVHV1ceOJ/giphy.gif)
+
+]
+
+.pull-right[
+```{r, echo=F, fig.align='center', message=FALSE, warning=FALSE, out.width="55%"}
+
+library(here)
+include_graphics(here("Figures","map.png"))
+
+```
+]
+
+---
+## Ready to Play??
+
+When all fails, appeal to online [**sticker making**](https://connect.thinkr.fr/hexmake/)
+
+![](https://i.gifer.com/3sUf.gif)
+
+
+
+
+
+
